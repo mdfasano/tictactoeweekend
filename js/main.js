@@ -6,16 +6,19 @@ const PLAYERS = {
     0: 'blank'
 }
 
+//3x3 board, scaleable  if we want?
+const BOARDSIZE = 3;
+
 /* --------variables--------*/
 
-let board;
+let board = [];
 let turn; //1 or -1
 let winner; //1, -1, T
 
 /* -----cached elements------ */
 const messageEl = document.querySelector('h2');
 const playAgainButton = document.querySelector('button');
-
+const errorMsg = document.querySelector('.errorMsg')
 //this will return an array bc of spread operator ...
 const boardEls = [...document.querySelectorAll('.board > div')];
 
@@ -31,11 +34,13 @@ init ();
 
 
 function init () {
-    board = [
-        [0, 0, 0], //col0
-        [0, 0, 0], //col1
-        [0, 0, 0]  //col2
-    ];
+    for (let i=0; i<BOARDSIZE; i++) {
+        const row = [];
+        for (let j=0; j<BOARDSIZE; j++) {
+            row.push(0);
+        }
+        board.push(row)
+    }
     turn = 1;
     winner = null;
     render();
@@ -70,15 +75,28 @@ function renderMessage () {
 }
 
 function renderControls () {
+        errorMsg.style.visibility = 'hidden'
         playAgainButton.style.visibility = winner ? 'visible' : 'hidden';
 }
 
-function handleMove () {
-    if (turn < 0) {
-        boardEls[0].style.background = 'no-repeat center/95% url("imgs/O.png")';
-    } else {
-        boardEls[0].style.background = 'no-repeat center/95% url("imgs/X.png")';
-    }
+function handleMove (evt) {
+    // colIdx = Math.floor(boardEls.indexOf(evt.target)/3);
+    // rowIdx = boardEls.indexOf(evt.target)%3;
+    // console.log(`col${colIdx} row${rowIdx}`)
+
+    //return if clicked btw board slots
+    if (!evt.target.id || evt.target.className === 'played') {
+        errorMsg.style.visibility = 'visible';
+        return
+    };
+    moveHelper(evt);
     turn *= '-1';
     renderMessage();
+}
+function moveHelper (evt) {
+    if (turn < 0) evt.target.style.background = 'no-repeat center/95% url("imgs/O.png")';
+    if (turn > 0) evt.target.style.background = 'no-repeat center/95% url("imgs/X.png")';
+
+    evt.target.className = 'played';
+    errorMsg.style.visibility = 'hidden';
 }
