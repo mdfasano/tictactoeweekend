@@ -47,7 +47,6 @@ function init () {
 }
 
 function render () {
-    console.log('rendering')
     renderBoard();
     renderControls();
     renderMessage();
@@ -59,6 +58,7 @@ function renderBoard () {
             const cellId = `c${colIdx}r${rowIdx}`;
             const cellEl = document.getElementById(cellId);
             cellEl.style.background = 'darkgrey';
+            cellEl.className = 'unplayed';
         })
     })
 }
@@ -84,11 +84,7 @@ function handleMove (evt) {
     // rowIdx = boardEls.indexOf(evt.target)%3;
     // console.log(`col${colIdx} row${rowIdx}`)
 
-    //return if clicked btw board slots
-    if (!evt.target.id || evt.target.className === 'played') {
-        errorMsg.style.visibility = 'visible';
-        return
-    };
+    if (!isPlayableSpace(evt.target)) return;
     moveHelper(evt);
     turn *= '-1';
     renderMessage();
@@ -99,4 +95,10 @@ function moveHelper (evt) {
 
     evt.target.className = 'played';
     errorMsg.style.visibility = 'hidden';
+}
+function isPlayableSpace (el) {
+    if (!el.id || el.className === 'played') {
+        errorMsg.style.visibility = 'visible';
+        return false
+    } else return true;
 }
