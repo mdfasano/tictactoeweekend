@@ -22,9 +22,7 @@ const boardEls = [...document.querySelectorAll('.board > div')];
 /*----- event listeners -----*/
 
 //add event listener for all 9 board slots
-//begin by just making the button increment turn var
 document.querySelector('.board').addEventListener('click', handleMove);
-
 playAgainButton.addEventListener('click', init);
 
 
@@ -39,7 +37,7 @@ function init () {
         [0, 0, 0]  //col2
     ];
     turn = 1;
-    winner = '-1';
+    winner = null;
     render();
 }
 
@@ -66,8 +64,8 @@ function renderMessage () {
         messageEl.innerText = `${PLAYERS[winner]} wins!`
     } else {
 
-        if(turn < 0) messageEl.innerText = "O's turn";
-        if(turn > 0) messageEl.innerText = "X's turn";
+        if(turn < 0) messageEl.innerText = `${PLAYERS[turn]}'s turn`;
+        if(turn > 0) messageEl.innerText = `${PLAYERS[turn]}'s turn`;
     }
 }
 
@@ -76,6 +74,11 @@ function renderControls () {
 }
 
 function handleMove () {
+    if (turn < 0) {
+        boardEls[0].style.background = 'no-repeat center/95% url("imgs/O.png")';
+    } else {
+        boardEls[0].style.background = 'no-repeat center/95% url("imgs/X.png")';
+    }
     turn *= '-1';
     renderMessage();
 }
