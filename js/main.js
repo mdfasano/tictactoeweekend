@@ -39,7 +39,7 @@ function init () {
         [0, 0, 0]  //col2
     ];
     turn = 1;
-    winner = null;
+    winner = '-1';
     render();
 }
 
@@ -61,11 +61,14 @@ function renderBoard () {
 }
 
 function renderMessage () {
-    if(turn < 0) messageEl.innerText = "O's turn";
-    if(turn > 0) messageEl.innerText = "X's turn";
+    if (winner === 'T') messageEl.innerText = 'Tie!';
+    else if (winner) {
+        messageEl.innerText = `${PLAYERS[winner]} wins!`
+    } else {
 
-    
-
+        if(turn < 0) messageEl.innerText = "O's turn";
+        if(turn > 0) messageEl.innerText = "X's turn";
+    }
 }
 
 function renderControls () {
