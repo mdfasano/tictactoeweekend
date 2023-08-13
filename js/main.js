@@ -1,9 +1,9 @@
 /*  -------constants-------- */
 
 const PLAYERS = {
-    1: 'X',
-    '-1': 'O',
-    0: 'blank'
+    1: 'no-repeat center/95% url("imgs/X.png")',
+    '-1': 'no-repeat center/95% url("imgs/O.png")',
+    0: 'darkgrey'
 }
 
 //3x3 board, scaleable  if we want?
@@ -57,7 +57,7 @@ function renderBoard () {
         colArr.forEach(function (cellVal, rowIdx) {
             const cellId = `c${colIdx}r${rowIdx}`;
             const cellEl = document.getElementById(cellId);
-            cellEl.style.background = 'darkgrey';
+            cellEl.style.background = PLAYERS[cellVal];
             //cellEl.className = 'unplayed';
         })
     })
@@ -69,8 +69,8 @@ function renderMessage () {
         messageEl.innerText = `${PLAYERS[winner]} wins!`
     } else {
 
-        if(turn < 0) messageEl.innerText = `${PLAYERS[turn]}'s turn`;
-        if(turn > 0) messageEl.innerText = `${PLAYERS[turn]}'s turn`;
+        if(turn < 0) messageEl.innerText = `O's turn`;
+        if(turn > 0) messageEl.innerText = `X's turn`;
     }
 }
 
@@ -87,85 +87,78 @@ function handleMove (evt) {
     if (!isPlayableSpace(colIdx, rowIdx)) return;
     moveHelper(evt, colIdx, rowIdx);
     turn *= '-1';
-    checkWinner(colIdx, rowIdx);
-    renderMessage();
+   // winner = checkWinner(colIdx, rowIdx);
+    render();
 }
 function moveHelper (evt, colIdx, rowIdx) {
-    if (turn < 0) evt.target.style.background = 'no-repeat center/95% url("imgs/O.png")';
-    if (turn > 0) evt.target.style.background = 'no-repeat center/95% url("imgs/X.png")';
-
     board[colIdx][rowIdx] = turn;
     errorMsg.style.visibility = 'hidden';
 }
 function isPlayableSpace (colIdx, rowIdx) {
-    console.log(board[colIdx][rowIdx]);
     if (colIdx < 0 || board[colIdx][rowIdx] !== 0) {
         errorMsg.style.visibility = 'visible';
         return false
     } else return true;
 }
 // function checkWinner (colIdx, rowIdx) {
-//     checkDiagWinNESW(colIdx, rowIdx) ||
-//     checkDiagWinNWSE(colIdx, rowIdx) ||
-//     checkHorWin(colIdx, rowIdx) ||
-//      checkVertWin(colIdx, rowIdx)
+//     return (
+//         // checkDiagWinNESW(colIdx, rowIdx) ||
+//         // checkDiagWinNWSE(colIdx, rowIdx) ||
+//         // checkHorWin(colIdx, rowIdx) ||
+//         checkVertWin(colIdx, rowIdx)
+//     )
 // }
 
 // function checkVertWin(colIdx, rowIdx) {
-//     // going from north to south
-//     // 0 - not changing our column
-//     // -1 - moving south
-//     return countAdjacent(colIdx, rowIdx, 0, -1) === 3 ? board[colIdx][rowIdx] : null
+//     const countUp = countAdjacent(colIdx, rowIdx, 0, 1);
+//     const countDown = countAdjacent(colIdx, rowIdx, 0, -1);
+
+//     return  countUp + countDown >= BOARDSIZE-1 ? board[colIdx][rowIdx] : null;
 // }
 
-// function checkHorWin(colIdx, rowIdx) {
-//     // going left 
-//     // -1 - we are changing columns
-//     // 0 - we are not changing rows
-//     const adjCountLeft = countAdjacent(colIdx, rowIdx, -1, 0)
+// // function checkHorWin(colIdx, rowIdx) {
+// //     const countLeft = countAdjacent(colIdx, rowIdx, -1, 0);
+// //     const countRight = countAdjacent(colIdx, rowIdx, 1, 0);
 
-//     // going to the right
-//     // 1 - we are changing columns
-//     // 0 - we are not changing rows
-//     const adjCountRight = countAdjacent(colIdx, rowIdx, 1, 0)
+// //     return countLeft + countRight >= BOARDSIZE ? board[colIdx][rowIdx] : null;
+// // }
 
-//     return adjCountLeft + adjCountRight >= 3 ? board[colIdx][rowIdx] : null
-// }
+// // function checkDiagWinNWSE(colIdx, rowIdx) {
+// //     const countNW = countAdjacent(colIdx, rowIdx, -1, 1);
+// //     const countSE = countAdjacent(colIdx, rowIdx, 1, -1);
 
-// function checkDiagWinNWSE(colIdx, rowIdx) {
-//     const adjCountNW = countAdjacent(colIdx, rowIdx, -1, 1)
-//     const adjCountSE = countAdjacent(colIdx, rowIdx, 1, -1)
+// //     return countNW + countSE >= BOARDSIZE ? board[colIdx][rowIdx] : null;
+// // }
 
-//     return adjCountNW + adjCountSE >= 3 ? board[colIdx][rowIdx] : null
-// }
+// // function checkDiagWinNESW(colIdx, rowIdx) {
+// //     const countNE = countAdjacent(colIdx, rowIdx, 1, 1);
+// //     const countSW = countAdjacent(colIdx, rowIdx, -1, -1);
 
-// function checkDiagWinNESW(colIdx, rowIdx) {
-//     const adjCountNE = countAdjacent(colIdx, rowIdx, 1, 1)
-//     const adjCountSW = countAdjacent(colIdx, rowIdx, -1, -1)
-
-//     return adjCountNE + adjCountSW >= 3 ? board[colIdx][rowIdx] : null
-// }
+// //     return countNE + countSW >= BOARDSIZE ? board[colIdx][rowIdx] : null;
+// // }
 
 // function countAdjacent(colIdx, rowIdx, colOffset, rowOffset) {
 //     // I want to grab the player
-//     const player = board[colIdx][rowIdx]
+//     const player = board[colIdx][rowIdx];
 
 //     // start count
-//     let count = 0
+//     let count = 0;
 
-//     colIdx += colOffset
-//     rowIdx += rowOffset
+//     colIdx += colOffset;
+//     rowIdx += rowOffset;
 
 //     // loop until a condition is met
+//     console.log(`cadj loop: c${colIdx}r${rowIdx}`)
 //     while (
 //         board[colIdx] !== undefined &&
 //         board[colIdx][rowIdx] !== undefined &&
 //         board[colIdx][rowIdx] === player
 //     ) {
 //         count++
-//         colIdx += colOffset
-//         rowIdx += rowOffset
+//         console.log(count)
+//         colIdx += colOffset;
+//         rowIdx += rowOffset;
 //     }
 
-//     return count
+//     return count;
 // }
