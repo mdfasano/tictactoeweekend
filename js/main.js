@@ -14,9 +14,19 @@ let winner; //1, -1, T
 
 /* -----cached elements------ */
 const messageEl = document.querySelector('h2');
-const playAgainButton = document.querySelector('#playAgain');
+const playAgainButton = document.querySelector('button');
+
+//this will return an array bc of spread operator ...
+const boardEls = [...document.querySelectorAll('.board > div')];
 
 /*----- event listeners -----*/
+
+//add event listener for all 9 board slots
+//begin by just making the button increment turn var
+document.querySelector('.board').addEventListener('click', handleMove);
+
+playAgainButton.addEventListener('click', init);
+
 
 /* ------functions------- */
 init ();
@@ -34,6 +44,7 @@ function init () {
 }
 
 function render () {
+    console.log('rendering')
     renderBoard();
     renderControls();
     renderMessage();
@@ -50,9 +61,18 @@ function renderBoard () {
 }
 
 function renderMessage () {
-    messageEl.innerText = "O's turn"
+    if(turn < 0) messageEl.innerText = "O's turn";
+    if(turn > 0) messageEl.innerText = "X's turn";
+
+    
+
 }
 
 function renderControls () {
         playAgainButton.style.visibility = winner ? 'visible' : 'hidden';
+}
+
+function handleMove () {
+    turn *= '-1';
+    renderMessage();
 }
